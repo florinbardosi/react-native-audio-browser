@@ -34,6 +34,10 @@ enum CarPlayArtworkResolver {
   ///   - targetHeight: Target height in points
   ///   - displayScale: The CarPlay display scale factor
   ///   - urlResolver: Optional closure that resolves artwork URLs (wraps BrowserManager)
+  // Isolated to the main actor like its only caller, CarPlayImageLoader:
+  // Swift 6.3 rejects sending the main-actor `urlResolver` closure into a
+  // nonisolated async function ("risks causing data races").
+  @MainActor
   static func resolve(
     artwork: String?,
     artworkSourceUri: String?,
