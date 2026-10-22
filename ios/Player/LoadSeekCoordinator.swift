@@ -49,6 +49,9 @@ final class LoadSeekCoordinator {
     state = .seekInFlight(time: time)
 
     let cmTime = CMTime(seconds: time, preferredTimescale: 1000)
+    // The delegate is only touched back on the main actor; Swift 6.3 cannot
+    // prove that through AVPlayer's @Sendable completion handler.
+    nonisolated(unsafe) let delegate = delegate
     player
       .seek(to: cmTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero) { finished in
         Task { @MainActor in
